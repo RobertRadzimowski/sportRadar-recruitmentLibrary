@@ -1,9 +1,9 @@
 package com.sportradar.recruitmentLibrary;
 
 import lombok.Getter;
-import java.time.LocalDate;
 
-import static java.time.LocalDate.now;
+import static java.lang.System.currentTimeMillis;
+import static java.lang.System.nanoTime;
 import static org.apache.commons.lang3.ObjectUtils.requireNonEmpty;
 
 
@@ -14,14 +14,15 @@ import static org.apache.commons.lang3.ObjectUtils.requireNonEmpty;
  * @version 1.0
  */
 @Getter
-public class Match {
+public class Match implements Comparable<Match> {
+    private final String matchId;
     private final String homeTeam;
     private final String awayTeam;
+    private final Long startTime;
 
     private int homeScore;
     private int awayScore;
     private boolean isActive;
-    private LocalDate startDate;
 
     public Match(final String home, final String away) {
 
@@ -31,7 +32,8 @@ public class Match {
         isActive = true;
         homeScore = 0;
         awayScore = 0;
-        startDate = now();
+        startTime = nanoTime();
+        matchId = homeTeam + "_" + awayTeam + "_" + startTime; // Todo: Better Id generation method
     }
 
     /**
@@ -61,9 +63,19 @@ public class Match {
     }
 
     /**
-     * Finishes match.
+     * Order is based on total (home + away) score. In case of draw, newer takes priority.
+     *
+     *
+     * @param other Match is compared against
+     * @return better value match
      */
-    public int getCombinedScore() {
-        return homeScore + awayScore;
+    @Override
+    public int compareTo(Match other) {
+        int scoreComparison = Integer.compare((this.getHomeScore() + this.getAwayScore()),
+                (other.getHomeScore() + other.getAwayScore()));
+        return switch (scoreComparison) {
+            case -1, 1 -> scoreComparison;
+            default -> Long.compare(this.startTime, other.startTime);
+        };
     }
 }

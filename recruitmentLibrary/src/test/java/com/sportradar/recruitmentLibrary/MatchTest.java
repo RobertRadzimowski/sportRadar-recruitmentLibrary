@@ -13,7 +13,7 @@ public class MatchTest {
     public static String HOME_TEAM = "Polska";
     public static String AWAY_TEAM = "San Marino";
 
-    private static Stream<Arguments> constructorTestScenarios() {
+    public static Stream<Arguments> constructorTestScenarios() {
         String homeExceptionMessage = "Home team name must not be null nor empty.";
         String awayExceptionMessage = "Away team name must not be null nor empty.";
         return Stream.of(
@@ -28,7 +28,7 @@ public class MatchTest {
     }
 
     @ParameterizedTest(name = "{0} scenario")
-    @MethodSource("com.sportradar.recruitmentLibrary.MatchTest#constructorTestScenarios")
+    @MethodSource("constructorTestScenarios")
     public void constructorTest(final String caseDescription,
                                 final String home,
                                 final String away,
@@ -36,12 +36,12 @@ public class MatchTest {
         try {
             Match match = new Match(home, away);
         } catch (Exception catchedException) {
-            assertEquals(catchedException.getClass(), expectedException.getClass());
-            assertEquals(catchedException.getMessage(), expectedException.getMessage());
+            assertEquals(expectedException.getClass(), catchedException.getClass());
+            assertEquals(expectedException.getMessage(), catchedException.getMessage());
         }
     }
 
-    private static Stream<Arguments> updateScoreTestScenarios() {
+    public static Stream<Arguments> updateScoreTestScenarios() {
         String numberExceptionMessage = "Score can't be negative.";
         return Stream.of(
                 of("OK", 1, 1, null),
@@ -55,7 +55,7 @@ public class MatchTest {
     }
 
     @ParameterizedTest(name = "{0} scenario")
-    @MethodSource("com.sportradar.recruitmentLibrary.MatchTest#updateScoreTestScenarios")
+    @MethodSource("updateScoreTestScenarios")
     public void updateScoreTest(final String caseDescription,
                                 final Integer home,
                                 final Integer away,
@@ -66,8 +66,8 @@ public class MatchTest {
             assertEquals(match.getHomeScore(), home);
             assertEquals(match.getAwayScore(), away);
         } catch (Exception catchedException) {
-            assertEquals(catchedException.getClass(), expectedException.getClass());
-            assertEquals(catchedException.getMessage(), expectedException.getMessage());
+            assertEquals(expectedException.getClass(), catchedException.getClass());
+            assertEquals(expectedException.getMessage(), catchedException.getMessage());
         }
     }
 }
