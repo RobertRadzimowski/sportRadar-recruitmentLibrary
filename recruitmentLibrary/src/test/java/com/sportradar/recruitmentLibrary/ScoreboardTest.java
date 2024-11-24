@@ -8,13 +8,12 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.sportradar.recruitmentLibrary.MatchTest.AWAY_TEAM;
 import static com.sportradar.recruitmentLibrary.MatchTest.HOME_TEAM;
 import static java.util.Objects.isNull;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.of;
 
