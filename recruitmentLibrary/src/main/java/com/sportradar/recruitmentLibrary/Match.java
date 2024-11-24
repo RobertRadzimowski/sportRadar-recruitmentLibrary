@@ -1,5 +1,6 @@
 package com.sportradar.recruitmentLibrary;
 
+import lombok.Getter;
 import java.time.LocalDate;
 
 import static java.time.LocalDate.now;
@@ -12,6 +13,7 @@ import static org.apache.commons.lang3.ObjectUtils.requireNonEmpty;
  * @author Robert Radzimowski
  * @version 1.0
  */
+@Getter
 public class Match {
     private final String homeTeam;
     private final String awayTeam;
@@ -63,21 +65,5 @@ public class Match {
      */
     public int getCombinedScore() {
         return homeScore + awayScore;
-    }
-
-    public String getHomeTeam() {
-        return homeTeam;
-    }
-
-    public int getHomeScore() {
-        return homeScore;
-    }
-
-    public String getAwayTeam() {
-        return awayTeam;
-    }
-
-    public int getAwayScore() {
-        return awayScore;
     }
 }
