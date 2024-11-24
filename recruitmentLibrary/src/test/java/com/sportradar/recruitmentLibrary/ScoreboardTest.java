@@ -8,11 +8,13 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.sportradar.recruitmentLibrary.MatchTest.AWAY_TEAM;
 import static com.sportradar.recruitmentLibrary.MatchTest.HOME_TEAM;
 import static java.util.Objects.isNull;
+import static java.util.stream.Collectors.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.of;
 
@@ -88,9 +90,18 @@ public class ScoreboardTest {
         addTestScore(scoreboard, "Germany", 2, "France", 2);
         addTestScore(scoreboard, "Uruguay", 6, "Italy", 6);
         addTestScore(scoreboard, "Argentina", 3, "Australia", 1);
+        List<String> expected = List.of(
+                "Uruguay_Italy_4",
+                "Spain_Brazil_2",
+                "Mexico_Canada_1",
+                "Argentina_Australia_5",
+                "Germany_France_3");
 
-        List<Match> summary = scoreboard.getSummary();
-        assertEquals(5,summary.size());
+
+        List<String> summary = scoreboard.getSummary().stream().map(Match::getMatchId).collect(toList());
+        assertEquals(5, summary.size());
+        assertEquals(expected,summary);
+
     }
 
     private void addTestScore(final Scoreboard scoreboard,

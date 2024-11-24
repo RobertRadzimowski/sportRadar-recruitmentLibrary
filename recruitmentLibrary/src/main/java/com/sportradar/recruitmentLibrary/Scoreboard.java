@@ -30,7 +30,7 @@ public class Scoreboard {
      * @return matchId handler
      */
     public String startNewMatch(final String home, final String away) {
-        Match match = new Match(home, away);
+        Match match = new Match(home, away, this.activeMatches()+1);
         ongoingMatches.put(match.getMatchId(), match);
         return match.getMatchId();
     }

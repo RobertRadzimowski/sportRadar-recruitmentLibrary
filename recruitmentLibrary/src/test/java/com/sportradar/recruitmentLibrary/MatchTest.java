@@ -34,7 +34,7 @@ public class MatchTest {
                                 final String away,
                                 final Exception expectedException) {
         try {
-            Match match = new Match(home, away);
+            Match match = new Match(home, away, 0);
         } catch (Exception catchedException) {
             assertEquals(expectedException.getClass(), catchedException.getClass());
             assertEquals(expectedException.getMessage(), catchedException.getMessage());
@@ -60,7 +60,7 @@ public class MatchTest {
                                 final Integer home,
                                 final Integer away,
                                 final Exception expectedException) {
-        Match match = new Match(HOME_TEAM, AWAY_TEAM);
+        Match match = new Match(HOME_TEAM, AWAY_TEAM, 0);
         try {
             match.updateScore(home, away);
             assertEquals(match.getHomeScore(), home);

@@ -2,8 +2,6 @@ package com.sportradar.recruitmentLibrary;
 
 import lombok.Getter;
 
-import static java.lang.System.currentTimeMillis;
-import static java.lang.System.nanoTime;
 import static org.apache.commons.lang3.ObjectUtils.requireNonEmpty;
 
 
@@ -18,22 +16,29 @@ public class Match implements Comparable<Match> {
     private final String matchId;
     private final String homeTeam;
     private final String awayTeam;
-    private final Long startTime;
+    private final int matchCounter;
 
     private int homeScore;
     private int awayScore;
     private boolean isActive;
 
-    public Match(final String home, final String away) {
+    /**
+     * Main constructor for Match object
+     *
+     * @param home         Home team name
+     * @param away         Away team name
+     * @param matchCounter used to resolve order in draw cases
+     */
+    public Match(final String home, final String away, final int matchCounter) {
 
         this.homeTeam = requireNonEmpty(home, "Home team name must not be null nor empty.");
         this.awayTeam = requireNonEmpty(away, "Away team name must not be null nor empty.");
 
-        isActive = true;
-        homeScore = 0;
-        awayScore = 0;
-        startTime = nanoTime();
-        matchId = homeTeam + "_" + awayTeam + "_" + startTime; // Todo: Better Id generation method
+        this.isActive = true;
+        this.homeScore = 0;
+        this.awayScore = 0;
+        this.matchCounter = matchCounter;
+        this.matchId = homeTeam + "_" + awayTeam + "_" + matchCounter;
     }
 
     /**
@@ -65,7 +70,6 @@ public class Match implements Comparable<Match> {
     /**
      * Order is based on total (home + away) score. In case of draw, newer takes priority.
      *
-     *
      * @param other Match is compared against
      * @return better value match
      */
@@ -75,7 +79,7 @@ public class Match implements Comparable<Match> {
                 (other.getHomeScore() + other.getAwayScore()));
         return switch (scoreComparison) {
             case -1, 1 -> scoreComparison;
-            default -> Long.compare(this.startTime, other.startTime);
+            default -> Integer.compare(this.getMatchCounter(), other.getMatchCounter());
         };
     }
 }
