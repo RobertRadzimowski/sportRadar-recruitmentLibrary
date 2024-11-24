@@ -40,7 +40,7 @@ public class Match {
      * @throws IllegalArgumentException when trying to update with negative score.
      * @throws IllegalStateException    when trying to update closed match.
      */
-    public void updateScore(final int homeScore, final int awayScore) throws IllegalArgumentException {
+    public void updateScore(final Integer homeScore, final Integer awayScore) throws IllegalArgumentException {
         if (homeScore < 0 || awayScore < 0) {
             throw new IllegalArgumentException("Score can't be negative.");
         }

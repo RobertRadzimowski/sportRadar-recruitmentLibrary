@@ -6,36 +6,68 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.of;
 
 public class MatchTest {
+    public static String HOME_TEAM = "Polska";
+    public static String AWAY_TEAM = "San Marino";
 
     private static Stream<Arguments> constructorTestScenarios() {
-        NullPointerException homeException = new NullPointerException("Home team name must not be null nor empty.");
-        NullPointerException awayException = new NullPointerException("Home team name must not be null nor empty.");
+        String homeExceptionMessage = "Home team name must not be null nor empty.";
+        String awayExceptionMessage = "Away team name must not be null nor empty.";
         return Stream.of(
-                of("OK", "Polska", "San Marino", null),
-                of("Arguments Null", null, null, homeException),
-                of("Arguments empty", "","", homeException),
-                of("\"Home\" null", null, "San Marino",homeException),
-                of("\"Home\" empty", "","San Marino", homeException),
-                of("\"Away\" Null", "Polska", null, awayException),
-                of("\"Away\" empty", "Polska","", awayException)
-                );
+                of("OK", HOME_TEAM, AWAY_TEAM, null),
+                of("Arguments Null", null, null, new NullPointerException(homeExceptionMessage)),
+                of("Arguments empty", "", "", new IllegalArgumentException(homeExceptionMessage)),
+                of("\"Home\" null", null, AWAY_TEAM, new NullPointerException(homeExceptionMessage)),
+                of("\"Home\" empty", "", AWAY_TEAM, new IllegalArgumentException(homeExceptionMessage)),
+                of("\"Away\" Null", HOME_TEAM, null, new NullPointerException(awayExceptionMessage)),
+                of("\"Away\" empty", HOME_TEAM, "", new IllegalArgumentException(awayExceptionMessage))
+        );
     }
 
     @ParameterizedTest(name = "{0} scenario")
-    @MethodSource ("com.sportradar.recruitmentLibrary.MatchTest#constructorTestScenarios")
-    public void constructorTest (final String caseDescription,
-                                 final String home,
-                                 final String away,
-                                 final Exception expectedException) {
+    @MethodSource("com.sportradar.recruitmentLibrary.MatchTest#constructorTestScenarios")
+    public void constructorTest(final String caseDescription,
+                                final String home,
+                                final String away,
+                                final Exception expectedException) {
         try {
             Match match = new Match(home, away);
         } catch (Exception catchedException) {
-            assertThat (catchedException.getClass().equals(expectedException.getClass()));
-            assertThat (catchedException.getMessage().equals(expectedException.getMessage()));
+            assertEquals(catchedException.getClass(), expectedException.getClass());
+            assertEquals(catchedException.getMessage(), expectedException.getMessage());
+        }
+    }
+
+    private static Stream<Arguments> updateScoreTestScenarios() {
+        String numberExceptionMessage = "Score can't be negative.";
+        return Stream.of(
+                of("OK", 1, 1, null),
+                of("Idempotent operation", 0, 0, null),
+                of("Arguments Null", null, null, new NullPointerException("Cannot invoke \"java.lang.Integer.intValue()\" because \"homeScore\" is null")),
+                of("Home Null", null, 1, new NullPointerException("Cannot invoke \"java.lang.Integer.intValue()\" because \"homeScore\" is null")),
+                of("Away Null", 1, null, new NullPointerException("Cannot invoke \"java.lang.Integer.intValue()\" because \"awayScore\" is null")),
+                of("Negative arguments", -13, 5, new IllegalArgumentException(numberExceptionMessage)),
+                of("Update finished match", 1, 1, new IllegalStateException("Can't update score for closed match."))
+        );
+    }
+
+    @ParameterizedTest(name = "{0} scenario")
+    @MethodSource("com.sportradar.recruitmentLibrary.MatchTest#updateScoreTestScenarios")
+    public void updateScoreTest(final String caseDescription,
+                                final Integer home,
+                                final Integer away,
+                                final Exception expectedException) {
+        Match match = new Match(HOME_TEAM, AWAY_TEAM);
+        try {
+            match.updateScore(home, away);
+            assertEquals(match.getHomeScore(), home);
+            assertEquals(match.getAwayScore(), away);
+        } catch (Exception catchedException) {
+            assertEquals(catchedException.getClass(), expectedException.getClass());
+            assertEquals(catchedException.getMessage(), expectedException.getMessage());
         }
     }
 }
