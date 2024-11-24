@@ -10,7 +10,7 @@ For tests, I used typical GWT composition and a scenario/case-based approach, wh
 
 There is room for more test cases and scenarios, but as stated in the paragraph title - this is MVP. It's viable to be used, with room for improvements. I also didn't want to overcommit with time for it -after all, keeping it simple was a requirement :)
 
-##Assumptions
+## Assumptions
 1. To simplify the code I added ID to match, derived from teams' names and ordering. It could be omitted, as there shouldn't be a case that the same team appears in 2 matches at the same time.
 2. Because of 1. I used map to hold active games, casting it to ordered list only when necessary. This is a typical case of choosing what we want to optimize - by going with map, adding/removing is simplified, but getting list is more time consuming (not important for this particular case size) and saves time on dev side.
 3. Added not-mentioned but logical requirements eg. no negative game scores (throws an exception),  and the finishing match was made safe for wrong arguments. I'm mentioning those 2 on purpose. Why? A different approach is caused by differences in expected results: wrong score can't be used (illegalState), but removing non-existing data, leads to no action and no data corrupted (success of operation determined by returned object).
